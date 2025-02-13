@@ -35,6 +35,8 @@ function register_cron_jobs() {
 
 /**
  * Read a feed and syndicate the content.
+ *
+ * @param string $feed_url The URL of the feed to syndicate.
  */
 function syndicate_feed( $feed_url ) {
 	// First ensure that the feed is in the option.

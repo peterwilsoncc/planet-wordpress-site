@@ -19,9 +19,6 @@ function bootstrap() {
 	add_action( 'admin_menu', __NAMESPACE__ . '\\init_options_page' );
 }
 
-
-
-
 /**
  * Register the settings page under the options menu.
  */
@@ -35,6 +32,9 @@ function init_options_page() {
 	);
 }
 
+/**
+ * Initialise the settings fields.
+ */
 function init_settings() {
 	register_setting(
 		'planet-wordpress-site',

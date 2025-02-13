@@ -84,7 +84,7 @@ function include_cpt_with_posts( $query ) {
 /**
  * Filter the permalink for syndicated posts.
  *
- * @param string $permalink The post permalink.
+ * @param string  $permalink The post permalink.
  * @param WP_Post $post The post object.
  * @return string The permalink.
  */
