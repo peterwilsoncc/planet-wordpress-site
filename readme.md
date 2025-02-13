@@ -1,2 +1,2 @@
-# WP Plugin Template
+# Planet WordPress Site
 

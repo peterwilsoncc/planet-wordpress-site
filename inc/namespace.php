@@ -1,14 +1,14 @@
 <?php
 /**
- * WP Plugin Template
+ * Planet WordPress Site
  *
- * @package           WpPluginTemplate
+ * @package           PlanetWordPressSite
  * @author            Peter Wilson
  * @copyright         2023 Peter Wilson
  * @license           MIT
  */
 
-namespace PWCC\WpPluginTemplate;
+namespace PWCC\PlanetWordPressSite;
 
 /**
  * Bootstrap the plugin.

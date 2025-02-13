@@ -1,25 +1,25 @@
 <?php
 /**
- * WP Plugin Template
+ * Planet WordPress Site
  *
- * @package           WpPluginTemplate
+ * @package           PlanetWordPressSite
  * @author            Peter Wilson
  * @copyright         YYYY Peter Wilson
  * @license           MIT
  *
  * @wordpress-plugin
- * Plugin Name: WP Plugin Template
- * Description:
+ * Plugin Name: Planet WordPress Site
+ * Description: A POC plugin for the Planet WordPress Site.
  * Version: 1.0.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Peter Wilson
  * Author URI: https://peterwilson.cc
  * License: MIT
- * Text Domain: wp-plugin-template
+ * Text Domain: planet-wordPress-site
  */
 
-namespace PWCC\WpPluginTemplate;
+namespace PWCC\PlanetWordPressSite;
 
 require_once __DIR__ . '/inc/namespace.php';
 

@@ -1,6 +1,6 @@
 {
-    "name": "peterwilsoncc/wp-plugin-template",
-    "description": "WP Plugin Template.",
+    "name": "peterwilsoncc/planet-wordPress-site",
+    "description": "Planet WordPress Site.",
     "type": "wordpress-plugin",
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
