@@ -124,6 +124,8 @@ function syndicate_item( $item, $feed_data ) {
 		$post_data['ID'] = $post_id;
 		// Do not update the time.
 		unset( $post_data['post_date_gmt'] );
+		// Nor the post status, it may have been unpublished intentionally.
+		unset( $post_data['post_status'] );
 	}
 
 	$post_id = wp_insert_post( $post_data );
