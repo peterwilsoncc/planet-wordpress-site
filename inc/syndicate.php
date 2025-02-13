@@ -82,7 +82,15 @@ function syndicate_feed( $feed_url ) {
  */
 function syndicate_item( $item, $feed_data ) {
 	$item_guid = $item->get_id();
-	$post_slug = md5( $item_guid );
+
+	/*
+	 * Hash the GUID to create a unique post slug.
+	 *
+	 * This is a convenient way to ensure the post slug for each
+	 * syndicated post is unique. It is not a security measure,
+	 * therefore it is not necessary to use a salt.
+	 */
+	$post_slug = hash( 'sha256', $item_guid );
 
 	// Check if the item has already been syndicated.
 	$query = new WP_Query(
