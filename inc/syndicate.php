@@ -67,7 +67,7 @@ function syndicate_feed( $feed_url ) {
 
 	// Syndicate the feed items.
 	foreach ( $response->get_items() as $item ) {
-		syndicate_item( $item, $feed_data[0] );
+		syndicate_item( $item, reset( $feed_data ) );
 	}
 }
 
@@ -82,19 +82,17 @@ function syndicate_feed( $feed_url ) {
  */
 function syndicate_item( $item, $feed_data ) {
 	$item_guid = $item->get_id();
+	$post_slug = md5( $item_guid );
 
 	// Check if the item has already been syndicated.
 	$query = new WP_Query(
 		array(
-			'post_type'   => 'planet_syndicated',
-			'post_status' => 'any',
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Yes, this is a known slow query.
-			'meta_query'  => array(
-				array(
-					'key'   => 'syndicated_feed_guid',
-					'value' => $item_guid,
-				),
-			),
+			'post_type'              => 'planet_syndicated',
+			'post_status'            => 'any',
+			'name'                   => $post_slug,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'no_found_rows'          => true,
 		)
 	);
 
@@ -114,6 +112,7 @@ function syndicate_item( $item, $feed_data ) {
 		'post_date_gmt' => $mysql_date_gmt,
 		'post_status'   => 'publish',
 		'post_type'     => 'planet_syndicated',
+		'post_name'     => $post_slug,
 		'meta_input'    => array(
 			'syndicated_feed_guid' => $item_guid,
 			'syndicated_feed_url'  => $feed_data['site_link'],
