@@ -22,5 +22,8 @@
 namespace PWCC\PlanetWordPressSite;
 
 require_once __DIR__ . '/inc/namespace.php';
+require_once __DIR__ . '/inc/post-types.php';
+require_once __DIR__ . '/inc/settings.php';
+require_once __DIR__ . '/inc/syndicate.php';
 
 bootstrap();
