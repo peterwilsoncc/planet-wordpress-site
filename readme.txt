@@ -6,7 +6,7 @@ Tested up to: 6.5
 Stable tag: 1.0.0
 Requires PHP: 7.4
 License: MIT
-License URI: https://github.com/peterwilsoncc/planet-wordPress-site/blob/main/LICENSE
+License URI: https://github.com/peterwilsoncc/planet-wordpress-site/blob/main/LICENSE
 
 Short Description
 

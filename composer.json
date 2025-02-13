@@ -1,5 +1,5 @@
 {
-    "name": "peterwilsoncc/planet-wordPress-site",
+    "name": "peterwilsoncc/planet-wordpress-site",
     "description": "Planet WordPress Site.",
     "type": "wordpress-plugin",
     "require-dev": {

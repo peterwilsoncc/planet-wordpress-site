@@ -16,7 +16,7 @@
  * Author: Peter Wilson
  * Author URI: https://peterwilson.cc
  * License: MIT
- * Text Domain: planet-wordPress-site
+ * Text Domain: planet-wordpress-site
  */
 
 namespace PWCC\PlanetWordPressSite;
