@@ -88,6 +88,7 @@ function syndicate_item( $item, $feed_data ) {
 		array(
 			'post_type'   => 'planet_syndicated',
 			'post_status' => 'any',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Yes, this is a known slow query.
 			'meta_query'  => array(
 				array(
 					'key'   => 'syndicated_feed_guid',
