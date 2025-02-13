@@ -4,7 +4,7 @@
  *
  * @package           PlanetWordPressSite
  * @author            Peter Wilson
- * @copyright         2023 Peter Wilson
+ * @copyright         2025 Peter Wilson
  * @license           MIT
  */
 
