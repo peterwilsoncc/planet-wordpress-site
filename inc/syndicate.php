@@ -84,6 +84,15 @@ function syndicate_feed( $feed_url ) {
 	}
 }
 
+/**
+ * Create or update the category for a feed.
+ *
+ * Creates a category for the feed based on the feed URL. If a category
+ * exists, the name will be updated if it has changed.
+ *
+ * @param array $feed_data The feed data.
+ * @return array|WP_Error The term data or a WP_Error object.
+ */
 function maybe_create_category( $feed_data ) {
 	// Base the slug on the feed URL to allow for the site name to change.
 	$term_slug  = hash( 'sha256', $feed_data['feed_url'] );
@@ -121,6 +130,7 @@ function maybe_create_category( $feed_data ) {
  *
  * @param object $item      The feed item to syndicate.
  * @param array  $feed_data The feed data.
+ * @param int    $term_id   The term ID for the feed.
  */
 function syndicate_item( $item, $feed_data, $term_id ) {
 	$item_guid = $item->get_id();

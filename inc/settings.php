@@ -63,3 +63,35 @@ function get_syndicated_feeds() {
 
 	return $feeds;
 }
+
+/**
+ * Get the term IDs for any sites that are not being displayed.
+ *
+ * @return int[] Array of term IDs for sites that are not being displayed.
+ */
+function get_term_ids_for_undisplayed_sites() {
+	$sites        = get_syndicated_feeds();
+	$hidden_sites = array_filter(
+		$sites,
+		function ( $site ) {
+			return ! $site['display'];
+		}
+	);
+
+	if ( empty( $hidden_sites ) ) {
+		return array();
+	}
+
+	// Get the term IDs for each of the hidden sites.
+	$term_ids = array();
+
+	foreach ( $hidden_sites as $site ) {
+		$term = get_term_by( 'slug', hash( 'sha256', $site['feed_url'] ), 'category' );
+
+		if ( false !== $term ) {
+			$term_ids[] = $term->term_id;
+		}
+	}
+
+	return $term_ids;
+}
