@@ -215,7 +215,9 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 			// Bypass the update, nothing has changed.
 			return;
 		}
+		wp_update_post( $post_data );
+		return;
 	}
 
-	$post_id = wp_update_post( $post_data );
+	$post_id = wp_insert_post( $post_data );
 }
