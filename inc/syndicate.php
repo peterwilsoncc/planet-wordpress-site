@@ -160,7 +160,7 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 	$query = new WP_Query(
 		array(
 			'post_type'              => 'post',
-			'post_status'            => 'any',
+			'post_status'            => array( 'publish', 'draft' ),
 			'name'                   => $post_slug,
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
@@ -214,5 +214,5 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 		}
 	}
 
-	$post_id = wp_insert_post( $post_data );
+	$post_id = wp_update_post( $post_data );
 }
