@@ -22,6 +22,7 @@ function bootstrap() {
 	add_action( 'pre_get_posts', __NAMESPACE__ . '\\remove_hidden_sites_from_post_query' );
 	add_filter( 'post_link', __NAMESPACE__ . '\\syndicated_post_permalink', 10, 2 );
 	add_filter( 'term_link', __NAMESPACE__ . '\\syndicated_site_term_link', 10, 3 );
+	add_filter( 'the_title_rss', __NAMESPACE__ . '\\syndicated_post_title_rss', 10 );
 }
 
 /**
@@ -95,4 +96,30 @@ function syndicated_site_term_link( $term_link, $term, $taxonomy ) {
 		$term_link = get_term_meta( $term->term_id, 'syndication_link', true );
 	}
 	return $term_link;
+}
+
+/**
+ * Filter the title for syndicated posts in the RSS feed.
+ *
+ * @param string $title The post title.
+ * @return string The post title prefixed with the feed title.
+ */
+function syndicated_post_title_rss( $title ) {
+	$source_permalink = get_post_meta( get_the_ID(), 'permalink', true );
+	$source_feed_url  = get_post_meta( get_the_ID(), 'syndicated_feed_url', true );
+
+	if ( ! $source_permalink || ! $source_feed_url ) {
+		return $title;
+	}
+
+	$feeds = Settings\get_syndicated_feeds();
+
+	foreach ( $feeds as $feed ) {
+		if ( $feed['site_link'] === $source_feed_url ) {
+			$title = "{$feed['title']}: {$title}";
+			break;
+		}
+	}
+
+	return $title;
 }
