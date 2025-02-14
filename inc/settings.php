@@ -95,3 +95,20 @@ function get_term_ids_for_undisplayed_sites() {
 
 	return $term_ids;
 }
+
+/**
+ * Get the feeds that are to be displayed.
+ *
+ * @return array[] Array of feeds to be displayed.
+ */
+function get_displayed_feeds() {
+	$feeds = get_syndicated_feeds();
+	$feeds = array_filter(
+		$feeds,
+		function ( $feed ) {
+			return $feed['display'];
+		}
+	);
+
+	return $feeds;
+}
