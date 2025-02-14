@@ -17,6 +17,7 @@ function bootstrap() {
 	Syndicate\bootstrap();
 
 	add_action( 'pre_get_posts', __NAMESPACE__ . '\\remove_hidden_sites_from_post_query' );
+	add_filter( 'post_link', __NAMESPACE__ . '\\syndicated_post_permalink', 10, 2 );
 }
 
 /**
@@ -51,4 +52,18 @@ function remove_hidden_sites_from_post_query( $query ) {
 	}
 
 	$query->set( 'category__not_in', array_merge( $already_hidden, $hidden_site_ids ) );
+}
+
+/**
+ * Filter the permalink for syndicated posts.
+ *
+ * @param string  $permalink The post permalink.
+ * @param WP_Post $post The post object.
+ * @return string The permalink.
+ */
+function syndicated_post_permalink( $permalink, $post ) {
+	if ( 'post' === $post->post_type && get_post_meta( $post->ID, 'permalink', true ) ) {
+		$permalink = get_post_meta( $post->ID, 'permalink', true );
+	}
+	return $permalink;
 }
