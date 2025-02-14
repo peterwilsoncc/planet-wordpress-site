@@ -80,9 +80,9 @@ function syndicated_post_permalink( $permalink, $post ) {
 /**
  * Filter the permalink for syndicated sites.
  *
- * @param string $term_link The term link.
+ * @param string  $term_link The term link.
  * @param WP_Term $term The term object.
- * @param string $taxonomy The taxonomy.
+ * @param string  $taxonomy The taxonomy.
  * @return string The term link.
  */
 function syndicated_site_term_link( $term_link, $term, $taxonomy ) {
