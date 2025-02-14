@@ -188,6 +188,7 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 		'post_name'      => $post_slug,
 		'comment_status' => 'closed',
 		'ping_status'    => 'closed',
+		'to_ping'        => '',
 		'meta_input'     => array(
 			'syndicated_feed_guid' => $item_guid,
 			'syndicated_feed_url'  => $feed_data['site_link'],
