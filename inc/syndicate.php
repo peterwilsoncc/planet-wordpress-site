@@ -114,7 +114,7 @@ function maybe_create_category( $feed_data ) {
 		return $new_term;
 	}
 
-	// Update the term if the name has changed.
+	// Update the term if the name or site link has changed.
 	if ( $term->name !== $term_title || $term_syndication_link !== $feed_data['site_link'] ) {
 		$new_term = wp_update_term(
 			$term->term_id,
@@ -172,6 +172,7 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 	if ( $query->have_posts() ) {
 		$updating = true;
 		$post_id  = $query->posts[0]->ID;
+		$old_post = get_post( $post_id );
 	}
 
 	$post_timestamp = $item->get_date( 'U' );
@@ -199,6 +200,18 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 		unset( $post_data['post_date_gmt'] );
 		// Nor the post status, it may have been unpublished intentionally.
 		unset( $post_data['post_status'] );
+
+		// Check if the post is unchanged.
+		$old_source_permalink = get_post_meta( $post_id, 'permalink', true );
+		if (
+			$old_post->post_title === $post_data['post_title']
+			&& $old_post->post_content === $post_data['post_content']
+			&& $old_post->post_excerpt === $post_data['post_excerpt']
+			&& $old_source_permalink === $post_data['meta_input']['permalink']
+		) {
+			// Bypass the update, nothing has changed.
+			return;
+		}
 	}
 
 	$post_id = wp_insert_post( $post_data );
