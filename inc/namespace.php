@@ -15,6 +15,7 @@ namespace PWCC\PlanetWordPressSite;
  */
 function bootstrap() {
 	Syndicate\bootstrap();
+	Widget\bootstrap();
 
 	add_action( 'pre_get_posts', __NAMESPACE__ . '\\remove_hidden_sites_from_post_query' );
 	add_filter( 'post_link', __NAMESPACE__ . '\\syndicated_post_permalink', 10, 2 );
