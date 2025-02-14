@@ -98,27 +98,34 @@ function maybe_create_category( $feed_data ) {
 	$term_slug  = hash( 'sha256', $feed_data['feed_url'] );
 	$term_title = wp_strip_all_tags( $feed_data['title'] );
 
-	$term = get_term_by( 'slug', $term_slug, 'category' );
+	$term                  = get_term_by( 'slug', $term_slug, 'category' );
+	$term_syndication_link = get_term_meta( $term->term_id, 'syndication_link', true );
 
 	if ( false === $term ) {
-		return wp_insert_term(
+		$new_term = wp_insert_term(
 			$term_title,
 			'category',
 			array(
 				'slug' => $term_slug,
 			)
 		);
+
+		update_term_meta( $new_term['term_id'], 'syndication_link', wp_slash( esc_url_raw( $feed_data['site_link'] ) ) );
+		return $new_term;
 	}
 
 	// Update the term if the name has changed.
-	if ( $term->name !== $term_title ) {
-		return wp_update_term(
+	if ( $term->name !== $term_title || $term_syndication_link !== $feed_data['site_link'] ) {
+		$new_term = wp_update_term(
 			$term->term_id,
 			'category',
 			array(
 				'name' => $term_title,
 			)
 		);
+
+		update_term_meta( $new_term['term_id'], 'syndication_link', wp_slash( esc_url_raw( $feed_data['site_link'] ) ) );
+		return $new_term;
 	}
 
 	return array(
