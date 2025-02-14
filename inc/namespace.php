@@ -19,6 +19,7 @@ function bootstrap() {
 
 	add_action( 'pre_get_posts', __NAMESPACE__ . '\\remove_hidden_sites_from_post_query' );
 	add_filter( 'post_link', __NAMESPACE__ . '\\syndicated_post_permalink', 10, 2 );
+	add_filter( 'term_link', __NAMESPACE__ . '\\syndicated_site_term_link', 10, 3 );
 }
 
 /**
@@ -67,4 +68,24 @@ function syndicated_post_permalink( $permalink, $post ) {
 		$permalink = get_post_meta( $post->ID, 'permalink', true );
 	}
 	return $permalink;
+}
+
+/**
+ * Filter the permalink for syndicated sites.
+ *
+ * @param string $term_link The term link.
+ * @param WP_Term $term The term object.
+ * @param string $taxonomy The taxonomy.
+ * @return string The term link.
+ */
+function syndicated_site_term_link( $term_link, $term, $taxonomy ) {
+	if ( is_admin() ) {
+		// Do nothing in the admin.
+		return $term_link;
+	}
+
+	if ( 'category' === $taxonomy && get_term_meta( $term->term_id, 'syndication_link', true ) ) {
+		$term_link = get_term_meta( $term->term_id, 'syndication_link', true );
+	}
+	return $term_link;
 }
