@@ -2,10 +2,10 @@
 /**
  * Test Template
  *
- * @package PWCC\PlanetWordPressSite\Tests
+ * @package PWCC\PlanetWordPressSyndicator\Tests
  */
 
-namespace PWCC\PlanetWordPressSite\Tests;
+namespace PWCC\PlanetWordPressSyndicator\Tests;
 
 use WP_UnitTestCase;
 

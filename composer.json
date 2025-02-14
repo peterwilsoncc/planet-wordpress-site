@@ -1,6 +1,6 @@
 {
-    "name": "peterwilsoncc/planet-wordpress-site",
-    "description": "Planet WordPress Site.",
+    "name": "peterwilsoncc/planet-wordpress-syndicator",
+    "description": "Planet WordPress Syndicator.",
     "type": "wordpress-plugin",
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",

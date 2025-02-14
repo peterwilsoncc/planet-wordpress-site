@@ -8,7 +8,7 @@
 	convertWarningsToExceptions="true"
 	>
 	<testsuites>
-		<testsuite name="planet-wordpress-site">
+		<testsuite name="planet-wordpress-syndicator">
 			<directory prefix="class-test-" suffix=".php">./tests/</directory>
 			<!-- exclude>./tests/class-test-sample.php</exclude -->
 		</testsuite>

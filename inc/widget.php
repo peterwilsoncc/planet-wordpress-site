@@ -1,14 +1,14 @@
 <?php
 /**
- * Planet WordPress Site
+ * Planet WordPress Syndicator
  *
- * @package           PlanetWordPressSite
+ * @package           PlanetWordPressSyndicator
  * @author            Peter Wilson
  * @copyright         2025 Peter Wilson
  * @license           MIT
  */
 
-namespace PWCC\PlanetWordPressSite\Widget;
+namespace PWCC\PlanetWordPressSyndicator\Widget;
 
 /**
  * Bootstrap the widget.

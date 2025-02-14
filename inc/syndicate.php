@@ -1,16 +1,16 @@
 <?php
 /**
- * Planet WordPress Site
+ * Planet WordPress Syndicator
  *
- * @package           PlanetWordPressSite
+ * @package           PlanetWordPressSyndicator
  * @author            Peter Wilson
  * @copyright         2025 Peter Wilson
  * @license           MIT
  */
 
-namespace PWCC\PlanetWordPressSite\Syndicate;
+namespace PWCC\PlanetWordPressSyndicator\Syndicate;
 
-use PWCC\PlanetWordPressSite\Settings;
+use PWCC\PlanetWordPressSyndicator\Settings;
 use WP_Query;
 
 /**

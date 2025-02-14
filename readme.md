@@ -1,2 +1,2 @@
-# Planet WordPress Site
+# Planet WordPress Syndicator
 

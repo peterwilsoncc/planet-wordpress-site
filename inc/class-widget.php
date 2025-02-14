@@ -1,16 +1,16 @@
 <?php
 /**
- * Planet WordPress Site
+ * Planet WordPress Syndicator
  *
- * @package           PlanetWordPressSite
+ * @package           PlanetWordPressSyndicator
  * @author            Peter Wilson
  * @copyright         2025 Peter Wilson
  * @license           MIT
  */
 
-namespace PWCC\PlanetWordPressSite\Widget;
+namespace PWCC\PlanetWordPressSyndicator\Widget;
 
-use PWCC\PlanetWordPressSite\Settings;
+use PWCC\PlanetWordPressSyndicator\Settings;
 
 /**
  * The widget class to display links to each of the displayed
@@ -22,10 +22,10 @@ class Widget extends \WP_Widget {
 	 */
 	public function __construct() {
 		parent::__construct(
-			'planet_wordpress_site_widget',
-			__( 'Planet WordPress Site', 'planet-wordpress-site' ),
+			'planet_wordpress_syndicator_widget',
+			__( 'Planet WordPress Syndicator', 'planet-wordpress-syndicator' ),
 			array(
-				'description' => __( 'Display the syndicated feeds.', 'planet-wordpress-site' ),
+				'description' => __( 'Display the syndicated feeds.', 'planet-wordpress-syndicator' ),
 			)
 		);
 	}
