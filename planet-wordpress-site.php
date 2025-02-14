@@ -22,6 +22,7 @@
 namespace PWCC\PlanetWordPressSite;
 
 require_once __DIR__ . '/inc/namespace.php';
+require_once __DIR__ . '/inc/redirect-single.php';
 require_once __DIR__ . '/inc/settings.php';
 require_once __DIR__ . '/inc/syndicate.php';
 require_once __DIR__ . '/inc/widget.php';

@@ -14,6 +14,8 @@ namespace PWCC\PlanetWordPressSite;
  * Bootstrap the plugin.
  */
 function bootstrap() {
+	RedirectSingle\bootstrap();
+	Settings\bootstrap();
 	Syndicate\bootstrap();
 	Widget\bootstrap();
 
@@ -64,6 +66,11 @@ function remove_hidden_sites_from_post_query( $query ) {
  * @return string The permalink.
  */
 function syndicated_post_permalink( $permalink, $post ) {
+	if ( is_admin() ) {
+		// Do nothing in the admin.
+		return $permalink;
+	}
+
 	if ( 'post' === $post->post_type && get_post_meta( $post->ID, 'permalink', true ) ) {
 		$permalink = get_post_meta( $post->ID, 'permalink', true );
 	}

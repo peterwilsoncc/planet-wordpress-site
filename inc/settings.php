@@ -11,6 +11,12 @@
 namespace PWCC\PlanetWordPressSite\Settings;
 
 /**
+ * Bootrap the settings.
+ */
+function bootstrap() {
+}
+
+/**
  * Array of syndicated feeds
  *
  * @return array[] Array if syndicated feeds {
