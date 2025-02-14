@@ -120,6 +120,11 @@ function maybe_create_category( $feed_data ) {
 			)
 		);
 	}
+
+	return array(
+		'term_id'          => $term->term_id,
+		'term_taxonomy_id' => $term->term_taxonomy_id,
+	);
 }
 
 /**
