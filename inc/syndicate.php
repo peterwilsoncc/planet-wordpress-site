@@ -156,12 +156,17 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 	 */
 	$post_slug = hash( 'sha256', $item_guid );
 
+	$post_name_in = array(
+		$post_slug,
+		"{$post_slug}__trashed",
+	);
+
 	// Check if the item has already been syndicated.
 	$query = new WP_Query(
 		array(
 			'post_type'              => 'post',
-			'post_status'            => array( 'publish', 'draft' ),
-			'name'                   => $post_slug,
+			'post_status'            => 'all',
+			'post_name__in'          => $post_name_in,
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
 			'no_found_rows'          => true,
