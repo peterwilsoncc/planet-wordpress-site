@@ -14,7 +14,5 @@ namespace PWCC\PlanetWordPressSite;
  * Bootstrap the plugin.
  */
 function bootstrap() {
-	PostTypes\bootstrap();
-	Settings\bootstrap();
 	Syndicate\bootstrap();
 }

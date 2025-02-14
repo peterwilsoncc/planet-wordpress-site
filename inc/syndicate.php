@@ -10,6 +10,7 @@
 
 namespace PWCC\PlanetWordPressSite\Syndicate;
 
+use PWCC\PlanetWordPressSite\Settings;
 use WP_Query;
 
 /**
@@ -24,7 +25,7 @@ function bootstrap() {
  * Register a wp-cron job for each feed.
  */
 function register_cron_jobs() {
-	$feeds = get_option( 'pwp-syndicated_feeds', array() );
+	$feeds = Settings\get_syndicated_feeds();
 	foreach ( $feeds as $feed ) {
 		$timestamp = wp_next_scheduled( 'pwp_syndicate_feed', array( $feed['feed_url'] ) );
 		if ( false === $timestamp ) {
@@ -40,7 +41,7 @@ function register_cron_jobs() {
  */
 function syndicate_feed( $feed_url ) {
 	// First ensure that the feed is in the option.
-	$feeds     = get_option( 'pwp-syndicated_feeds', array() );
+	$feeds     = Settings\get_syndicated_feeds();
 	$feed_urls = wp_list_pluck( $feeds, 'feed_url' );
 
 	if ( ! in_array( $feed_url, $feed_urls, true ) ) {
@@ -51,6 +52,12 @@ function syndicate_feed( $feed_url ) {
 
 	// Get the feed details from the option.
 	$feed_data = wp_list_filter( $feeds, array( 'feed_url' => $feed_url ) );
+	$feed_data = reset( $feed_data );
+
+	if ( false === $feed_data['ingest'] ) {
+		// Registered but not ingesting at this time.
+		return;
+	}
 
 	// Fetch the feed.
 	$response = fetch_feed( $feed_url );
@@ -65,9 +72,44 @@ function syndicate_feed( $feed_url ) {
 		return 'no items';
 	}
 
+	$term = maybe_create_category( $feed_data );
+	if ( is_wp_error( $term ) ) {
+		// Something went wrong creating/getting the category.
+		return;
+	}
+
 	// Syndicate the feed items.
 	foreach ( $response->get_items() as $item ) {
-		syndicate_item( $item, reset( $feed_data ) );
+		syndicate_item( $item, $feed_data, $term['term_id'] );
+	}
+}
+
+function maybe_create_category( $feed_data ) {
+	// Base the slug on the feed URL to allow for the site name to change.
+	$term_slug  = hash( 'sha256', $feed_data['feed_url'] );
+	$term_title = wp_strip_all_tags( $feed_data['title'] );
+
+	$term = get_term_by( 'slug', $term_slug, 'category' );
+
+	if ( false === $term ) {
+		return wp_insert_term(
+			$term_title,
+			'category',
+			array(
+				'slug' => $term_slug,
+			)
+		);
+	}
+
+	// Update the term if the name has changed.
+	if ( $term->name !== $term_title ) {
+		return wp_update_term(
+			$term->term_id,
+			'category',
+			array(
+				'name' => $term_title,
+			)
+		);
 	}
 }
 
@@ -80,7 +122,7 @@ function syndicate_feed( $feed_url ) {
  * @param object $item      The feed item to syndicate.
  * @param array  $feed_data The feed data.
  */
-function syndicate_item( $item, $feed_data ) {
+function syndicate_item( $item, $feed_data, $term_id ) {
 	$item_guid = $item->get_id();
 
 	/*
@@ -95,7 +137,7 @@ function syndicate_item( $item, $feed_data ) {
 	// Check if the item has already been syndicated.
 	$query = new WP_Query(
 		array(
-			'post_type'              => 'planet_syndicated',
+			'post_type'              => 'post',
 			'post_status'            => 'any',
 			'name'                   => $post_slug,
 			'update_post_meta_cache' => false,
@@ -114,18 +156,19 @@ function syndicate_item( $item, $feed_data ) {
 	$mysql_date_gmt = gmdate( 'Y-m-d H:i:s', $post_timestamp );
 
 	$post_data = array(
-		'post_title'    => sanitize_text_field( "{$feed_data['title']}: {$item->get_title()}" ),
+		'post_title'    => wp_strip_all_tags( $item->get_title() ),
 		'post_content'  => wp_kses_post( $item->get_content() ),
 		'post_excerpt'  => wp_kses_post( $item->get_description() ),
 		'post_date_gmt' => $mysql_date_gmt,
 		'post_status'   => 'publish',
-		'post_type'     => 'planet_syndicated',
+		'post_type'     => 'post',
 		'post_name'     => $post_slug,
 		'meta_input'    => array(
 			'syndicated_feed_guid' => $item_guid,
 			'syndicated_feed_url'  => $feed_data['site_link'],
 			'permalink'            => esc_url_raw( $item->get_permalink() ),
 		),
+		'post_category' => array( $term_id ),
 	);
 
 	if ( $updating ) {
