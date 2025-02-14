@@ -179,19 +179,21 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 	$mysql_date_gmt = gmdate( 'Y-m-d H:i:s', $post_timestamp );
 
 	$post_data = array(
-		'post_title'    => wp_strip_all_tags( $item->get_title() ),
-		'post_content'  => wp_kses_post( $item->get_content() ),
-		'post_excerpt'  => wp_kses_post( $item->get_description() ),
-		'post_date_gmt' => $mysql_date_gmt,
-		'post_status'   => 'publish',
-		'post_type'     => 'post',
-		'post_name'     => $post_slug,
-		'meta_input'    => array(
+		'post_title'     => wp_strip_all_tags( $item->get_title() ),
+		'post_content'   => wp_kses_post( $item->get_content() ),
+		'post_excerpt'   => wp_kses_post( $item->get_description() ),
+		'post_date_gmt'  => $mysql_date_gmt,
+		'post_status'    => 'publish',
+		'post_type'      => 'post',
+		'post_name'      => $post_slug,
+		'comment_status' => 'closed',
+		'ping_status'    => 'closed',
+		'meta_input'     => array(
 			'syndicated_feed_guid' => $item_guid,
 			'syndicated_feed_url'  => $feed_data['site_link'],
 			'permalink'            => esc_url_raw( $item->get_permalink() ),
 		),
-		'post_category' => array( $term_id ),
+		'post_category'  => array( $term_id ),
 	);
 
 	if ( $updating ) {
