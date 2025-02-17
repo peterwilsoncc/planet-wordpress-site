@@ -23,7 +23,29 @@ function bootstrap() {
 	add_filter( 'post_link', __NAMESPACE__ . '\\syndicated_post_permalink', 10, 2 );
 	add_filter( 'term_link', __NAMESPACE__ . '\\syndicated_site_term_link', 10, 3 );
 	add_filter( 'the_title_rss', __NAMESPACE__ . '\\syndicated_post_title_rss', 10 );
+	add_action( 'init', __NAMESPACE__ . '\\register_expired_post_status' );
 }
+
+/**
+ * Register the expired post status.
+ *
+ * An internal status used for posts that have expired from the feed.
+ */
+function register_expired_post_status() {
+	register_post_status(
+		'pwp_expired',
+		array(
+			'label'                     => _x( 'Expired from feed', 'post', 'planet-wordpress-syndicator' ),
+			'public'                    => false,
+			'exclude_from_search'       => true,
+			'show_in_admin_all_list'    => true,
+			'show_in_admin_status_list' => true,
+			// translators: %s: number of posts.
+			'label_count'               => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'planet-wordpress-syndicator' ),
+		)
+	);
+}
+
 
 /**
  * Remove sites that are no longer being displayed from the post feed.

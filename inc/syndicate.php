@@ -78,11 +78,73 @@ function syndicate_feed( $feed_url ) {
 		return;
 	}
 
+	// Unpublish items that are no longer in the feed.
+	unpublished_expired_items( $response->get_items(), $feed_data, $term['term_id'] );
+
 	// Syndicate the feed items.
 	foreach ( $response->get_items() as $item ) {
 		syndicate_item( $item, $feed_data, $term['term_id'] );
 	}
 }
+
+/**
+ * Unpublish items that are no longer in the feed.
+ *
+ * As items are syndicated via RSS, there is no way of knowing
+ * if a feed item has been unpublished or is no longer in the feed
+ * due to a new item being added.
+ *
+ * This function will automatically unpublish items that are no longer
+ * in the feed to prevent a stale post from being published.
+ *
+ * @param array $items     The feed items.
+ * @param array $feed_data The feed data.
+ * @param int   $term_id   The term ID for the feed.
+ */
+function unpublished_expired_items( $items, $feed_data, $term_id ) {
+	$feed_slugs = array_map(
+		function( $item ) {
+			return hash( 'sha256', $item->get_id() );
+		},
+		$items
+	);
+
+	$query = new WP_Query(
+		array(
+			'post_type'              => 'post',
+			'post_status'            => 'publish',
+			'posts_per_page'         => -1,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'no_found_rows'          => true,
+			'cat'                    => $term_id,
+		)
+	);
+
+	// Nothing to do if there are no posts.
+	if ( ! $query->have_posts() ) {
+		return;
+	}
+
+	$expired_posts = array();
+	foreach ( $query->posts as $post ) {
+		$post_guid = $post->post_name;
+		if ( ! in_array( $post_guid, $feed_slugs, true ) ) {
+			$expired_posts[] = $post->ID;
+		}
+	}
+
+	// Unpublish the expired posts.
+	foreach ( $expired_posts as $post_id ) {
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'pwp_expired',
+			)
+		);
+	}
+}
+
 
 /**
  * Create or update the category for a feed.
@@ -206,13 +268,23 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 		$post_data['ID'] = $post_id;
 		// Do not update the time.
 		unset( $post_data['post_date_gmt'] );
-		// Nor the post status, it may have been unpublished intentionally.
-		unset( $post_data['post_status'] );
+
+		/*
+		 * Only update the post status if the current status is pwp_expired.
+		 *
+		 * Expired posts have been re-added to the feed and can be republished,
+		 * other unpublished posts should remain unpublished as they were intentionally
+		 * unpublished from Planet WordPress.
+		 */
+		if ( 'pwp_expired' !== $old_post->post_status ) {
+			unset( $post_data['post_status'] );
+		}
 
 		// Check if the post is unchanged.
 		$old_source_permalink = get_post_meta( $post_id, 'permalink', true );
 		if (
-			$old_post->post_title === $post_data['post_title']
+			! isset( $post_data['status'] )
+			&& $old_post->post_title === $post_data['post_title']
 			&& $old_post->post_content === $post_data['post_content']
 			&& $old_post->post_excerpt === $post_data['post_excerpt']
 			&& $old_source_permalink === $post_data['meta_input']['permalink']
