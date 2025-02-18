@@ -166,7 +166,7 @@ function maybe_create_category( $feed_data ) {
 			)
 		);
 
-		update_term_meta( $new_term['term_id'], 'syndication_link', wp_slash( esc_url_raw( $feed_data['site_link'] ) ) );
+		update_term_meta( $new_term['term_id'], 'syndication_link', wp_slash( sanitize_url( $feed_data['site_link'] ) ) );
 		return $new_term;
 	}
 
@@ -181,7 +181,7 @@ function maybe_create_category( $feed_data ) {
 			)
 		);
 
-		update_term_meta( $new_term['term_id'], 'syndication_link', wp_slash( esc_url_raw( $feed_data['site_link'] ) ) );
+		update_term_meta( $new_term['term_id'], 'syndication_link', wp_slash( sanitize_url( $feed_data['site_link'] ) ) );
 		return $new_term;
 	}
 
@@ -260,7 +260,7 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 		'meta_input'     => array(
 			'syndicated_feed_guid' => $item_guid,
 			'syndicated_feed_url'  => $feed_data['site_link'],
-			'permalink'            => esc_url_raw( $item->get_permalink() ),
+			'permalink'            => sanitize_url( $item->get_permalink() ),
 		),
 		'post_category'  => array( $term_id ),
 	);
