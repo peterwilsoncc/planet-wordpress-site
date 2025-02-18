@@ -184,6 +184,56 @@ class Test_Syndication extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensure edits to the source are reflected in the syndicated content.
+	 *
+	 * @dataProvider data_post_edits_at_source_are_reflected_in_syndicated_content
+	 *
+	 * @param int    $post_number    The post number in the feed containing an edit.
+	 * @param string $edited_field   The field that was edited (prefix meta data with `meta--`).
+	 * @param string $expected_value The expected value after the edit.
+	 */
+	public function test_post_edits_at_source_are_reflected_in_syndicated_content( $post_number, $edited_field, $expected_value ) {
+		$feed_category = get_term_by( 'name', 'WordPress News', 'category' );
+
+		// Update the feed with edited content.
+		self::filter_request( 'https://wordpress.org/news/feed/', 'wp-org-news-edited.rss' );
+		Syndicate\syndicate_feed( 'https://wordpress.org/news/feed/' );
+
+		// Query the posts.
+		$query = new \WP_Query(
+			array(
+				'post_status'   => 'all',
+				'category_name' => $feed_category->slug,
+			)
+		);
+
+		$post               = $query->posts[ $post_number ];
+		$actual_field_value = $post->$edited_field;
+
+		if ( str_starts_with( $edited_field, 'meta--' ) ) {
+			$edited_field       = substr( $edited_field, 6 );
+			$actual_field_value = get_post_meta( $post->ID, $edited_field, true );
+		}
+
+		// Ensure the edited field is updated.
+		$this->assertSame( $expected_value, $actual_field_value, 'The edited field should be updated.' );
+	}
+
+	/**
+	 * Data provider for the test_post_edits_at_source_are_reflected_in_syndicated_content test.
+	 *
+	 * @return array[] The data for the test.
+	 */
+	public function data_post_edits_at_source_are_reflected_in_syndicated_content() {
+		return array(
+			'post 1 title'            => array( 0, 'post_title', 'Post One Edited Title' ),
+			'post 2 excerpt'          => array( 1, 'post_excerpt', 'Post two edited excerpt' ),
+			'post 3 content'          => array( 2, 'post_content', '<p>Post three edited content</p>' ),
+			'post 4 source permalink' => array( 3, 'meta--permalink', 'https://wordpress.org/news/2024/12/post-four-edited-permalink/' ),
+		);
+	}
+
+	/**
 	 * Replace an external HTTP request with a local file.
 	 *
 	 * The file should be in the tests/data/requests directory.
