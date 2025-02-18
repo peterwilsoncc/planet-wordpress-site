@@ -45,6 +45,7 @@ class Test_Settings extends WP_UnitTestCase {
 						'title'     => 'WordPress News',
 						'feed_url'  => 'https://wordpress.org/news/feed/',
 						'site_link' => 'https://wordpress.org/news/',
+						'ingest'    => true,
 						'display'   => false,
 					),
 				);
