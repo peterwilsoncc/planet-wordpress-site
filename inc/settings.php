@@ -67,6 +67,13 @@ function get_syndicated_feeds() {
 		}
 	}
 
+	/**
+	 * Filters the syndicated feeds.
+	 *
+	 * @param array[] $feeds Array of syndicated feeds.
+	 */
+	$feeds = apply_filters( 'pwp_syndicated_feeds', $feeds );
+
 	return $feeds;
 }
 
