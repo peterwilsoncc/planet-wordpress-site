@@ -56,6 +56,7 @@ function syndicate_feed( $feed_url ) {
 
 	if ( false === $feed_data['ingest'] ) {
 		// Registered but not ingesting at this time.
+		// @todo: Consider how to handle edits, unpublishing, etc.
 		return;
 	}
 
