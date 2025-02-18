@@ -388,6 +388,47 @@ class Test_Syndication extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Revisions should not be created for unchanged posts.
+	 */
+	public function test_unchanged_posts_at_source_do_not_create_revisions() {
+		$feed_category = get_term_by( 'name', 'WordPress News', 'category' );
+
+		// Query the posts.
+		$query = new \WP_Query(
+			array(
+				'post_status'   => 'all',
+				'category_name' => $feed_category->slug,
+			)
+		);
+
+		// Get the first post.
+		$posts = $query->posts;
+
+		// Get the initial count of revisions for each post.
+		$initial_revisions = array_map(
+			function ( $post ) {
+				return count( wp_get_post_revisions( $post->ID ) );
+			},
+			$posts
+		);
+
+		// Update the feed with the same content.
+		self::filter_request( 'https://wordpress.org/news/feed/', 'wp-org-news-latest.rss' );
+		Syndicate\syndicate_feed( 'https://wordpress.org/news/feed/' );
+
+		// Get the updated count of revisions for each post.
+		$updated_revisions = array_map(
+			function ( $post ) {
+				return count( wp_get_post_revisions( $post->ID ) );
+			},
+			$posts
+		);
+
+		// Ensure no revisions were created.
+		$this->assertSame( $initial_revisions, $updated_revisions, 'No revisions should be created for unchanged posts.' );
+	}
+
+	/**
 	 * Replace an external HTTP request with a local file.
 	 *
 	 * The file should be in the tests/data/requests directory.
