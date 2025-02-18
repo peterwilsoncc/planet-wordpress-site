@@ -160,8 +160,7 @@ function maybe_create_category( $feed_data ) {
 	$term_slug  = hash( 'sha256', $feed_data['feed_url'] );
 	$term_title = wp_strip_all_tags( $feed_data['title'] );
 
-	$term                  = get_term_by( 'slug', $term_slug, 'category' );
-	$term_syndication_link = get_term_meta( $term->term_id, 'syndication_link', true );
+	$term = get_term_by( 'slug', $term_slug, 'category' );
 
 	if ( false === $term ) {
 		$new_term = wp_insert_term(
@@ -177,6 +176,7 @@ function maybe_create_category( $feed_data ) {
 	}
 
 	// Update the term if the name or site link has changed.
+	$term_syndication_link = get_term_meta( $term->term_id, 'syndication_link', true );
 	if ( $term->name !== $term_title || $term_syndication_link !== $feed_data['site_link'] ) {
 		$new_term = wp_update_term(
 			$term->term_id,
