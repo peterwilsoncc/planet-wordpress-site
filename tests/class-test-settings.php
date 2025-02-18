@@ -39,7 +39,7 @@ class Test_Settings extends WP_UnitTestCase {
 		// Filter the feed to be undisplayed.
 		add_filter(
 			'pwp_syndicated_feeds',
-			function ( $feeds ) {
+			function () {
 				return array(
 					array(
 						'title'     => 'WordPress News',

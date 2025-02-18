@@ -240,7 +240,7 @@ class Test_Syndication extends WP_UnitTestCase {
 		// Add the filter to prevent ingestion.
 		add_filter(
 			'pwp_syndicated_feeds',
-			function ( $feeds ) {
+			function () {
 				return array(
 					array(
 						'title'     => 'WordPress News',
@@ -261,9 +261,9 @@ class Test_Syndication extends WP_UnitTestCase {
 		$feed_category = get_term_by( 'name', 'WordPress News', 'category' );
 		$query         = new \WP_Query(
 			array(
-				'post_status'   => 'all',
+				'post_status'    => 'all',
 				'posts_per_page' => -1,
-				'category_name' => $feed_category->slug,
+				'category_name'  => $feed_category->slug,
 			)
 		);
 
