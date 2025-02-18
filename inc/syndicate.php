@@ -103,7 +103,7 @@ function syndicate_feed( $feed_url ) {
  */
 function unpublished_expired_items( $items, $feed_data, $term_id ) {
 	$feed_slugs = array_map(
-		function( $item ) {
+		function ( $item ) {
 			return hash( 'sha256', $item->get_id() );
 		},
 		$items
