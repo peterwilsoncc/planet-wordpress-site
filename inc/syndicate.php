@@ -283,7 +283,7 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 		// Check if the post is unchanged.
 		$old_source_permalink = get_post_meta( $post_id, 'permalink', true );
 		if (
-			! isset( $post_data['status'] )
+			! isset( $post_data['post_status'] )
 			&& $old_post->post_title === $post_data['post_title']
 			&& $old_post->post_content === $post_data['post_content']
 			&& $old_post->post_excerpt === $post_data['post_excerpt']
