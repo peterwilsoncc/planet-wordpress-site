@@ -234,6 +234,48 @@ class Test_Syndication extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that new posts are ingested not ingested if the feed is not set to ingest.
+	 */
+	public function test_new_posts_are_not_ingested_for_uningested_feeds() {
+		// Add the filter to prevent ingestion.
+		add_filter(
+			'pwp_syndicated_feeds',
+			function ( $feeds ) {
+				return array(
+					array(
+						'title'     => 'WordPress News',
+						'feed_url'  => 'https://wordpress.org/news/feed/',
+						'site_link' => 'https://wordpress.org/news/',
+						'ingest'    => false,
+						'display'   => true,
+					),
+				);
+			}
+		);
+
+		// Update the feed with new content.
+		self::filter_request( 'https://wordpress.org/news/feed/', 'wp-org-news-updated.rss' );
+		Syndicate\syndicate_feed( 'https://wordpress.org/news/feed/' );
+
+		// Query all the posts.
+		$feed_category = get_term_by( 'name', 'WordPress News', 'category' );
+		$query         = new \WP_Query(
+			array(
+				'post_status'   => 'all',
+				'posts_per_page' => -1,
+				'category_name' => $feed_category->slug,
+			)
+		);
+
+		// Get the post titles.
+		$post_titles = wp_list_pluck( $query->posts, 'post_title' );
+
+		// Ensure the new post was not ingested.
+		$this->assertNotContains( 'WordPress Themes Need More Weird: A Call for Creative Digital Homes', $post_titles, 'The new post should not be ingested.' );
+	}
+
+
+	/**
 	 * Replace an external HTTP request with a local file.
 	 *
 	 * The file should be in the tests/data/requests directory.
