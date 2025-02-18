@@ -274,6 +274,118 @@ class Test_Syndication extends WP_UnitTestCase {
 		$this->assertNotContains( 'WordPress Themes Need More Weird: A Call for Creative Digital Homes', $post_titles, 'The new post should not be ingested.' );
 	}
 
+	/**
+	 * Test that updated posts for un-ingested feeds are expired.
+	 */
+	public function test_updated_posts_for_uningested_feeds_are_expired() {
+		// Add the filter to prevent ingestion.
+		add_filter(
+			'pwp_syndicated_feeds',
+			function () {
+				return array(
+					array(
+						'title'     => 'WordPress News',
+						'feed_url'  => 'https://wordpress.org/news/feed/',
+						'site_link' => 'https://wordpress.org/news/',
+						'ingest'    => false,
+						'display'   => true,
+					),
+				);
+			}
+		);
+
+		self::filter_request( 'https://wordpress.org/news/feed/', 'wp-org-news-edited.rss' );
+		Syndicate\syndicate_feed( 'https://wordpress.org/news/feed/' );
+
+		// Query the posts.
+		$feed_category = get_term_by( 'name', 'WordPress News', 'category' );
+		$query         = new \WP_Query(
+			array(
+				'post_status'   => 'all',
+				'category_name' => $feed_category->slug,
+			)
+		);
+
+		// Get the post statuses.
+		$post_statuses = wp_list_pluck( $query->posts, 'post_status' );
+		$expected      = array( 'pwp_expired', 'pwp_expired', 'pwp_expired', 'pwp_expired', 'publish' );
+
+		// Ensure the updated posts are expired.
+		$this->assertSame( $expected, $post_statuses, 'The updated posts should be expired.' );
+	}
+
+	/**
+	 * Test new posts are not created for uningested feeds.
+	 */
+	public function test_new_posts_not_created_for_uningested_feeds() {
+		// Add the filter to prevent ingestion.
+		add_filter(
+			'pwp_syndicated_feeds',
+			function () {
+				return array(
+					array(
+						'title'     => 'WordPress News',
+						'feed_url'  => 'https://wordpress.org/news/feed/',
+						'site_link' => 'https://wordpress.org/news/',
+						'ingest'    => false,
+						'display'   => true,
+					),
+				);
+			}
+		);
+
+		// Update the feed with new content.
+		self::filter_request( 'https://wordpress.org/news/feed/', 'wp-org-news-updated.rss' );
+		Syndicate\syndicate_feed( 'https://wordpress.org/news/feed/' );
+
+		// Query the new post.
+		$new_post = get_posts(
+			array(
+				'title'       => 'WordPress Themes Need More Weird: A Call for Creative Digital Homes',
+				'post_status' => 'all',
+			)
+		);
+
+		// Ensure the new post was not ingested.
+		$this->assertEmpty( $new_post, 'The new post should not be ingested.' );
+	}
+
+	/**
+	 * Test posts removed from the feed are expired for uningested feeds.
+	 */
+	public function test_posts_removed_from_feed_are_expired_for_uningested_feeds() {
+		// Add the filter to prevent ingestion.
+		add_filter(
+			'pwp_syndicated_feeds',
+			function () {
+				return array(
+					array(
+						'title'     => 'WordPress News',
+						'feed_url'  => 'https://wordpress.org/news/feed/',
+						'site_link' => 'https://wordpress.org/news/',
+						'ingest'    => false,
+						'display'   => true,
+					),
+				);
+			}
+		);
+
+		// Update the feed with a new feed that does not contain the post.
+		self::filter_request( 'https://wordpress.org/news/feed/', 'wp-org-news-updated.rss' );
+		Syndicate\syndicate_feed( 'https://wordpress.org/news/feed/' );
+
+		// Query the removed post.
+		$expired_posts = get_posts(
+			array(
+				'title'       => 'WordPress 6.7.1 Maintenance Release',
+				'post_status' => 'all',
+			)
+		);
+		$expired_post  = reset( $expired_posts );
+
+		// Ensure the post is expired.
+		$this->assertSame( 'pwp_expired', get_post_status( $expired_post->ID ), 'The post should be expired.' );
+	}
 
 	/**
 	 * Replace an external HTTP request with a local file.

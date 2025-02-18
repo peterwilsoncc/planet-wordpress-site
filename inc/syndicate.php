@@ -54,23 +54,12 @@ function syndicate_feed( $feed_url ) {
 	$feed_data = wp_list_filter( $feeds, array( 'feed_url' => $feed_url ) );
 	$feed_data = reset( $feed_data );
 
-	if ( false === $feed_data['ingest'] ) {
-		// Registered but not ingesting at this time.
-		// @todo: Consider how to handle edits, unpublishing, etc.
-		return;
-	}
-
 	// Fetch the feed.
 	$response = fetch_feed( $feed_url );
 
 	// If the feed could not be fetched, do not continue.
 	if ( is_wp_error( $response ) ) {
 		return 'is error';
-	}
-
-	// If the feed doesn't have any items, do not continue.
-	if ( empty( $response->get_items() ) ) {
-		return 'no items';
 	}
 
 	$term = maybe_create_category( $feed_data );
@@ -81,6 +70,11 @@ function syndicate_feed( $feed_url ) {
 
 	// Unpublish items that are no longer in the feed.
 	unpublished_expired_items( $response->get_items(), $feed_data, $term['term_id'] );
+
+	// If the feed doesn't have any items, do not continue.
+	if ( empty( $response->get_items() ) ) {
+		return 'no items';
+	}
 
 	// Syndicate the feed items.
 	foreach ( $response->get_items() as $item ) {
@@ -209,6 +203,7 @@ function maybe_create_category( $feed_data ) {
  */
 function syndicate_item( $item, $feed_data, $term_id ) {
 	$item_guid = $item->get_id();
+	$ingesting = $feed_data['ingest'];
 
 	/*
 	 * Hash the GUID to create a unique post slug.
@@ -241,6 +236,11 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 		$updating = true;
 		$post_id  = $query->posts[0]->ID;
 		$old_post = get_post( $post_id );
+	}
+
+	// Ignore new posts if the feed is not set to ingest.
+	if ( ! $ingesting && ! $updating ) {
+		return;
 	}
 
 	$post_timestamp = $item->get_date( 'U' );
@@ -279,6 +279,9 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 		 */
 		if ( 'pwp_expired' !== $old_post->post_status ) {
 			unset( $post_data['post_status'] );
+		} elseif ( ! $ingesting ) {
+			// Do not update expired posts if the feed is not set to ingest.
+			return;
 		}
 
 		// Check if the post is unchanged.
@@ -293,6 +296,21 @@ function syndicate_item( $item, $feed_data, $term_id ) {
 			// Bypass the update, nothing has changed.
 			return;
 		}
+
+		/*
+		 * Expire the post if the feed is not set to ingest.
+		 *
+		 * The post has changed at the source so the post should be expired to prevent
+		 * the planet from showing out of date content. While this partially bypasses
+		 * the ingestion setting, it is necessary as there may be legal reason the post
+		 * has been removed, eg. a DMCA takedown.
+		 */
+		if ( ! $ingesting ) {
+			$post_data                = array();
+			$post_data['ID']          = $post_id;
+			$post_data['post_status'] = 'pwp_expired';
+		}
+
 		wp_update_post( $post_data );
 		return;
 	}
