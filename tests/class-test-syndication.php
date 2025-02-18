@@ -71,7 +71,49 @@ class Test_Syndication extends WP_UnitTestCase {
 	/**
 	 * Ensure that posts unpublished on WordPress planet are not republished.
 	 *
-	 * This test is to ensure that posts that are unpublished on the WordPress planet feed are not republished when the feed is updated.
+	 * This test is to ensure that posts that are unpublished on the WordPress planet feed are not republished when the feed is fetched.
+	 */
+	public function test_posts_unpublished_in_planet_are_not_republished_upon_feed_fetched() {
+		$feed_category = get_term_by( 'name', 'WordPress News', 'category' );
+
+		// Query the first published post.
+		$query = new \WP_Query(
+			array(
+				'post_status'    => 'publish',
+				'category_name'  => $feed_category->slug,
+				'posts_per_page' => 1,
+			)
+		);
+
+		// The query should only return one post.
+		$this->assertCount( 1, $query->posts, 'There should be 1 post in query.' );
+
+		$post_id = $query->posts[0]->ID;
+		$this->assertSame( 'publish', get_post_status( $post_id ), 'The post should be published initially.' );
+
+		// Unpublish the post.
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'draft',
+			)
+		);
+
+		// The post should now be a draft.
+		$this->assertSame( 'draft', get_post_status( $post_id ), 'The post should be published initially.' );
+
+		// Update the feed.
+		self::filter_request( 'https://wordpress.org/news/feed/', 'wp-org-news-latest.rss' );
+		Syndicate\syndicate_feed( 'https://wordpress.org/news/feed/' );
+
+		// The post should still be a draft.
+		$this->assertSame( 'draft', get_post_status( $post_id ), 'The post should still be a draft.' );
+	}
+
+	/**
+	 * Ensure that posts unpublished on WordPress planet are not republished when the feed updates.
+	 *
+	 * This test is to ensure that posts that are unpublished on the WordPress planet feed are not republished when the feed is updates.
 	 */
 	public function test_posts_unpublished_in_planet_are_not_republished_upon_feed_update() {
 		$feed_category = get_term_by( 'name', 'WordPress News', 'category' );
@@ -103,7 +145,47 @@ class Test_Syndication extends WP_UnitTestCase {
 		$this->assertSame( 'draft', get_post_status( $post_id ), 'The post should be published initially.' );
 
 		// Update the feed.
-		self::filter_request( 'https://wordpress.org/news/feed/', 'wp-org-news-latest.rss' );
+		self::filter_request( 'https://wordpress.org/news/feed/', 'wp-org-news-updated.rss' );
+		Syndicate\syndicate_feed( 'https://wordpress.org/news/feed/' );
+
+		// The post should still be a draft.
+		$this->assertSame( 'draft', get_post_status( $post_id ), 'The post should still be a draft.' );
+	}
+
+	/**
+	 * Ensure that posts unpublished on WordPress planet are not republished when edited at source.
+	 */
+	public function test_posts_unpublished_in_planet_are_not_republished_upon_post_edit() {
+		$feed_category = get_term_by( 'name', 'WordPress News', 'category' );
+
+		// Query the first published post.
+		$query = new \WP_Query(
+			array(
+				'post_status'    => 'publish',
+				'category_name'  => $feed_category->slug,
+				'posts_per_page' => 1,
+			)
+		);
+
+		// The query should only return one post.
+		$this->assertCount( 1, $query->posts, 'There should be 1 post in query.' );
+
+		$post_id = $query->posts[0]->ID;
+		$this->assertSame( 'publish', get_post_status( $post_id ), 'The post should be published initially.' );
+
+		// Unpublish the post.
+		wp_update_post(
+			array(
+				'ID'          => $post_id,
+				'post_status' => 'draft',
+			)
+		);
+
+		// The post should now be a draft.
+		$this->assertSame( 'draft', get_post_status( $post_id ), 'The post should be published initially.' );
+
+		// Update the feed.
+		self::filter_request( 'https://wordpress.org/news/feed/', 'wp-org-news-edited.rss' );
 		Syndicate\syndicate_feed( 'https://wordpress.org/news/feed/' );
 
 		// The post should still be a draft.
