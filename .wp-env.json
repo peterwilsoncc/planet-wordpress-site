@@ -6,7 +6,8 @@
 		"FS_METHOD": "direct",
 		"WP_ENVIRONMENT_TYPE": "local",
 		"JETPACK_DEV_DEBUG": true,
-		"WPORG_SANDBOXED": true
+		"WPORG_SANDBOXED": true,
+		"ALTERNATE_WP_CRON": true
 	},
 	"core": "WordPress/WordPress#master",
 	"plugins": [
