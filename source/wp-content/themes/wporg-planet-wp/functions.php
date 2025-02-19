@@ -120,12 +120,6 @@ function override_category_query_args( $query ) {
  * @return array
  */
 function clarify_body_classes( $classes ) {
-	if ( is_front_page() ) {
-		// Strip out "page" class, to prevent single-page styles from applying.
-		$classes = array_diff( $classes, [ 'page' ] );
-		$classes[] = 'news-front-page';
-	}
-
 	if ( is_home() ) {
 		// Strip out "page" class, to prevent single-page styles from applying.
 		$classes = array_diff( $classes, [ 'page' ] );
@@ -315,22 +309,6 @@ function add_links_to_categories_list( $html, $args ) {
 	);
 	$links = array_combine( $labels, $raw_links );
 
-	// All Posts
-	$links[ __( 'All Posts', 'wporg' ) ] = sprintf(
-		'<li class="cat-item cat-item-0 %1$s"><a href="%2$s">%3$s</a></li>',
-		is_home() ? 'current-cat' : '',
-		site_url( '/all-posts/' ),
-		__( 'All Posts', 'wporg' )
-	);
-
-	// Podcast
-	$links[ __( 'Podcast', 'wporg' ) ] = sprintf(
-		'<li class="cat-item cat-item-0 %1$s"><a href="%2$s">%3$s</a></li>',
-		is_post_type_archive( 'podcast' ) ? 'current-cat' : '',
-		get_post_type_archive_link( 'podcast' ),
-		__( 'Podcast', 'wporg' )
-	);
-
 	ksort( $links );
 
 	return implode( "\n\t", $links );
@@ -502,12 +480,6 @@ function add_site_navigation_menus( $menus ) {
 	);
 
 	// All Posts
-	$categories[] = array(
-		'label' => __( 'All Posts', 'wporg' ),
-		'url' => site_url( '/all-posts/' ),
-		'className' => is_home() ? 'current-menu-item' : '',
-	);
-
 	usort(
 		$categories,
 		function( $a, $b ) {
@@ -518,7 +490,7 @@ function add_site_navigation_menus( $menus ) {
 	return array(
 		'categories' => array(
 			array(
-				'label' => __( 'Categories', 'wporg' ),
+				'label' => __( 'Sites', 'wporg' ),
 				'submenu' => $categories,
 			),
 		),
@@ -543,7 +515,7 @@ function update_archive_title( $title ) {
 function update_site_title( $block_content ) {
 	return str_replace(
 		get_bloginfo( 'name' ),
-		__( 'News', 'wporg' ),
+		__( 'Planet WordPress', 'wporg' ),
 		$block_content
 	);
 }
