@@ -2,9 +2,7 @@
 <ruleset name="WordPress Coding Standards">
 
 	<!-- What to scan -->
-	<file>.</file>
-	<exclude-pattern>/vendor/</exclude-pattern>
-	<exclude-pattern>/node_modules/</exclude-pattern>
+	<file>./source/wp-content/plugins/planet-wordpress-syndicator</file>
 
 	<arg value="sp"/> <!-- Show sniff and progress -->
 	<arg name="basepath" value="./"/><!-- Strip the file paths down to the relevant bit -->
