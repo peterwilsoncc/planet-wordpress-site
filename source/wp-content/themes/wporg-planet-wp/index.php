@@ -1,4 +1,12 @@
 <?php
+/**
+ * Planet WordPress Syndicator
+ *
+ * @package           PlanetWordPressTheme
+ * @author            WordPress.org
+ * @copyright         2025 WordPress.org and contributors
+ * @license           GPL-2.0-or-later
+ */
 
 namespace WordPressdotorg\Theme\Planet_Wp;
 
