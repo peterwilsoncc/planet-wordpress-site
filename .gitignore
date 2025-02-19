@@ -28,6 +28,7 @@ phpcs.xml.dist
 !/source/wp-content/plugins/planet-wordpress-syndicator/
 !/source/wp-content/plugins/planet-wordpress-syndicator/*
 !/source/wp-content/plugins/planet-wordpress-syndicator/**/*
+/source/wp-content/themes/wporg-planet-wp/style.css
 
 # Dependencies.
 /vendor/
