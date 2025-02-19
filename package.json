@@ -1,0 +1,32 @@
+{
+	"name": "wporg-planet-wp-project",
+	"version": "1.0.0",
+	"description": "The codebase and development environment for planet.wordpress.org.",
+	"author": "WordPress.org",
+	"license": "GPL-2.0-or-later",
+	"private": true,
+	"dependencies": {},
+	"devDependencies": {
+		"@wordpress/env": "^10.0.0",
+		"browser-sync": "^2.27.10"
+	},
+	"scripts": {
+		"initial-setup": "composer install && yarn && yarn run update-configs",
+		"update-configs": "TEXTDOMAIN=wporg composer exec update-configs",
+		"wp-env": "wp-env",
+		"env": "wp-env start",
+		"env:stop": "wp-env stop",
+		"env:cli": "wp-env run cli",
+		"env:setup": "wp-env start --update && yarn run env:reset && yarn run env:import && yarn run env:misc",
+		"env:reset": "wp-env clean all && wp-env run cli wp site empty --yes",
+		"env:import": "wp-env run cli bash env/import.sh",
+		"env:misc": "wp-env run cli bash env/misc.sh",
+		"sync": "browser-sync start --config bs-config.js",
+		"start:all": "yarn workspaces run start & npm run sync & (cd source/wp-content/mu-plugins/wporg-mu-plugins/ && npm run start)",
+		"build:theme": "yarn workspace wporg-planet-wp-theme build"
+	},
+	"workspaces": [
+		"source/wp-content/themes/wporg-planet-wp",
+		"source/wp-content/mu-plugins/wporg-mu-plugins"
+	]
+}

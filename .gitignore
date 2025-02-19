@@ -20,15 +20,14 @@ wp-cli.yml
 phpcs.xml.dist
 
 # Ignore everything in source...
-/source/wp-content/*
-/source/wp-content/*
+/source/wp-content/plugins
+/source/wp-content/mu-plugins
+/source/wp-content/themes/pub
 
 # Explicitly track the actual source of this project.
-!/source/wp-content/themes/wporg-planet-wp/
 !/source/wp-content/plugins/planet-wordpress-syndicator/
-
-# Ignore built files in source directories.
-/source/wp-content/themes/wporg-planet-wp/style.css
+!/source/wp-content/plugins/planet-wordpress-syndicator/*
+!/source/wp-content/plugins/planet-wordpress-syndicator/**/*
 
 # Dependencies.
 /vendor/
