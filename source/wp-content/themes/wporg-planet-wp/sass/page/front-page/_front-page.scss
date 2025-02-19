@@ -1,0 +1,52 @@
+body.news-front-page {
+	// The homepage uses a blue background to help
+	// blend the site-header with the title and
+	// the latest releases section.
+	background: var(--wp--preset--color--blue-1);
+
+	// Since we have the large "News" headline we don't
+	// need to display the breadcrumb.
+	.local-header__breadcrumb {
+		visibility: hidden;
+	}
+
+	// The large "News" headline on the homepage.
+	.front__site-title {
+		position: relative;
+		z-index: 1;
+		background-color: var(--wp--preset--color--blue-1);
+		color: var(--wp--preset--color--white);
+		margin: 0 0 var(--wp--custom--alignment--edge-spacing);
+		padding: var(--wp--custom--alignment--edge-spacing);
+		font-size: clamp(80px, 25vw, 160px);
+
+		@media (min-width: 768px) {
+			margin: 0;
+		}
+
+		// Add and place the brush stroke
+		&::after {
+			content: "";
+			position: absolute;
+			top: calc(35% - 65px);
+			left: 180px;
+			height: 130px;
+			width: calc(100vw - 200px);
+			z-index: -1;
+			background-color: var(--wp--preset--color--blue-2);
+			mask-image: url(images/brush-stroke-big.svg);
+			mask-position: left center;
+			mask-repeat: no-repeat;
+			mask-size: cover;
+		}
+	}
+
+	// Remove the default block margin
+	.site-content-container {
+		margin-top: 0;
+
+		> .wp-block-template-part {
+			margin-top: 0;
+		}
+	}
+}
