@@ -47,7 +47,7 @@ function theme_support() {
 	add_theme_support( 'experimental-link-color' );
 
 	// Add support for responsive embedded content.
-	// https://github.com/WordPress/gutenberg/issues/26901
+	// See https://github.com/WordPress/gutenberg/issues/26901.
 	add_theme_support( 'responsive-embeds' );
 
 	// Add support for editor styles.
@@ -57,10 +57,10 @@ function theme_support() {
 	// Add support for post thumbnails.
 	add_theme_support( 'post-thumbnails' );
 
-	// Declare that there are no <title> tags and allow WordPress to provide them
+	// Declare that there are no <title> tags and allow WordPress to provide them.
 	add_theme_support( 'title-tag' );
 
-	// Experimental support for adding blocks inside nav menus
+	// Experimental support for adding blocks inside nav menus.
 	add_theme_support( 'block-nav-menus' );
 
 	// This theme has one menu location.
@@ -89,7 +89,7 @@ function enqueue_assets() {
  * We have certain category templates designed for different numbers of posts per page. Unfortunately it's not possible to set this in the block temlates.
  * (See https://github.com/WordPress/wporg-news-2021/issues/70#issuecomment-996460735)
  *
- * @param WP_Query $query
+ * @param WP_Query $query The Query object.
  */
 function override_category_query_args( $query ) {
 	if ( ! $query->get_queried_object() ) {
@@ -115,7 +115,7 @@ function override_category_query_args( $query ) {
  * @link https://core.trac.wordpress.org/ticket/21237
  * @link https://wordpress.stackexchange.com/questions/110349/template-hierarchy-confused-with-index-php-front-page-php-home-php
  *
- * @param array $classes
+ * @param array $classes Body classes.
  *
  * @return array
  */
@@ -141,7 +141,9 @@ function clarify_body_classes( $classes ) {
 /**
  * Add post classes to help make possible some design elements such as spacers between groups of posts.
  *
- * @param array $classes
+ * @param array $classes       Post classes.
+ * @param array $extra_classes Additional classes.
+ * @param int   $post_id       Post ID.
  *
  * @return array
  */
@@ -151,7 +153,7 @@ function specify_post_classes( $classes, $extra_classes, $post_id ) {
 		return $classes;
 	}
 
-	// Seems like the wp:query loop block doesn't count as "in the loop" so we'll do this the hard way:
+	// Seems like the wp:query loop block doesn't count as "in the loop" so we'll do this the hard way.
 	$current_post = null;
 	$count_posts  = count( $wp_query->posts );
 	for ( $i = 0; $i < $count_posts; $i++ ) {
@@ -160,7 +162,7 @@ function specify_post_classes( $classes, $extra_classes, $post_id ) {
 		}
 	}
 
-	// Add last-in-year to help put design elements in between year groups in the Month In WordPress category
+	// Add last-in-year to help put design elements in between year groups in the Month In WordPress category.
 	if ( $wp_query->is_category( 'month-in-wordpress' ) && $wp_query->post_count > 1 && ! is_null( $current_post ) ) {
 		// The "0th" of the month returns the last day of the previous month.
 		$date      = date_create_from_format( 'Y-m-d H:i:s', get_the_date( 'Y-m-00 00:00:00' ) );
@@ -186,7 +188,7 @@ function specify_post_classes( $classes, $extra_classes, $post_id ) {
 			$classes[] = 'first-year-of-page';
 		}
 
-		if ( $current_post === 0 ) {
+		if ( 0 === $current_post ) {
 			$classes[] = 'first-in-year';
 		}
 
@@ -263,6 +265,8 @@ function jetpack_likes_workaround() {
  * `SeriouslySimplePodcasting\Controllers\Frontend_Controller\add_all_post_types_for_tag_archive()` adds the
  * `podcast` post type to `$wp_query->query_vars['post_type']`. That causes the template loader to choose
  * `archive-podcast.html`, but we really want a standard content template instead.
+ *
+ * @param array $templates The list of templates to consider.
  */
 function override_tag_template( array $templates ): array {
 	if ( is_main_query() ) {
@@ -292,6 +296,7 @@ function custom_default_album_art_cover( $album_art ) {
  * Prepend a link to "All Posts" to the category list.
  *
  * @param string $html HTML output.
+ * @param array  $args Arguments used to call the function.
  * @return string
  */
 function add_links_to_categories_list( $html, $args ) {
@@ -381,6 +386,7 @@ function print_events_category_archive_script() {
 	} )();
 </script>
 	<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo ob_get_clean();
 }
 
@@ -458,6 +464,8 @@ function update_header_template_part_class( $block ) {
 
 /**
  * Provide a list of local navigation menus.
+ *
+ * @param array $menus The existing menus.
  */
 function add_site_navigation_menus( $menus ) {
 	$term_list = get_terms(
@@ -479,7 +487,7 @@ function add_site_navigation_menus( $menus ) {
 		$term_list
 	);
 
-	// All Posts
+	// All Posts.
 	usort(
 		$categories,
 		function ( $a, $b ) {
@@ -499,6 +507,8 @@ function add_site_navigation_menus( $menus ) {
 
 /**
  * Update the archive title on the Podcast archive.
+ *
+ * @param string $title The archive title.
  */
 function update_archive_title( $title ) {
 	if ( is_post_type_archive( 'podcast' ) ) {

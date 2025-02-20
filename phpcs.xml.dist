@@ -21,6 +21,9 @@
 		<!-- Namespace includes a vendor prefix -->
 		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedNamespaceFound"/>
 
+		<!-- Theme related issues -->
+		<exclude name="Squiz.Commenting.FileComment.Missing"/>
+
 		<!-- sanitize_url() was undprected in WordPress 5.9.0 -->
 		<exclude name="WordPress.WP.DeprecatedFunctions.sanitize_urlFound"/>
 	</rule>
@@ -33,7 +36,7 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<!-- Value: replace the text domain used. -->
-			<property name="text_domain" type="array" value="planet-wordpress-syndicator"/>
+			<property name="text_domain" type="array" value="planet-wordpress-syndicator,wporg"/>
 		</properties>
 	</rule>
 	<rule ref="WordPress.WhiteSpace.ControlStructureSpacing">
