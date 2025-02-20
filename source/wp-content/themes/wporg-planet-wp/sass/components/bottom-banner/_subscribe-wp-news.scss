@@ -1,0 +1,65 @@
+.bottom-banner .bottom-banner-items[class*="wp-block-"] .subscribe-wp-news {
+	.jetpack_subscription_widget {
+		form {
+			display: grid;
+			grid-template-columns: 1fr auto;
+
+			grid-template-areas:
+				"count count"
+				"email submit";
+
+			.jetpack-subscribe-count {
+				grid-area: count;
+
+				p {
+					margin-top: 0;
+					margin-bottom: 0;
+				}
+			}
+
+			#subscribe-email {
+				grid-area: email;
+
+				input {
+					width: 100%;
+					border: 1px solid var(--wp--preset--color--black);
+					border-right: none;
+					border-radius: 2px 0 0 2px;
+					font-size: var(--wp--custom--button--typography--font-size);
+					margin: 0;
+					height: 50px;
+				}
+			}
+
+			#subscribe-submit {
+				grid-area: submit;
+
+				.wp-block-button__link {
+					border-radius: 0 2px 2px 0;
+					margin: 0;
+					line-height: inherit;
+					height: 50px;
+				}
+			}
+		}
+
+		.success {
+			color: var(--wp--preset--color--success-green);
+		}
+
+		.error {
+			color: var(--wp--preset--color--vivid-red);
+		}
+	}
+}
+
+// Alternate dark version.
+%bottom-banner-dark {
+	.bottom-banner .bottom-banner-items[class*="wp-block-"] .subscribe-wp-news {
+		#subscribe-email input {
+			background-color: var(--wp--preset--color--white);
+			color: var(--wp--preset--color--black);
+			border: none;
+		}
+	}
+}

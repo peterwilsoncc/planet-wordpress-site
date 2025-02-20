@@ -4,10 +4,35 @@
 # Local configuration overrides.
 /phpcs.xml
 /phpunit.xml
+/**/.DS_STORE
+/**/.idea
+/**/.svn
+/**/build
+/**/node_modules
+*.map
+wp-cli.yml
+.wp-env.override.json
 
-# Dependecies.
+# Configs from wporg-repo-tools.
+.eslintrc.js
+.prettierrc.js
+.stylelintrc
+phpcs.xml.dist
+
+# Ignore everything in source...
+/source/wp-content/plugins/*
+/source/wp-content/mu-plugins/*
+/source/wp-content/themes/pub/*
+
+# Explicitly track the actual source of this project.
+!/source/wp-content/plugins/planet-wordpress-syndicator/
+!/source/wp-content/plugins/planet-wordpress-syndicator/*
+!/source/wp-content/plugins/planet-wordpress-syndicator/**/*
+/source/wp-content/themes/wporg-planet-wp/style.css
+
+# Dependencies.
 /vendor/
-/node_modules/
+/**/node_modules
 
 # Misc.
 /.phpunit.result.cache

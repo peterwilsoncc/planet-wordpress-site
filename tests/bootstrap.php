@@ -30,7 +30,7 @@ require_once "{$_pwcc_tests_directory}/includes/functions.php";
  * Manually load the plugin being tested.
  */
 function _pwcc_tests_manually_load_plugin() {
-	require dirname( __DIR__ ) . '/planet-wordpress-syndicator.php';
+	require dirname( __DIR__ ) . '/source/wp-content/plugins/planet-wordpress-syndicator/planet-wordpress-syndicator.php';
 }
 
 tests_add_filter( 'muplugins_loaded', '_pwcc_tests_manually_load_plugin' );
