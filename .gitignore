@@ -20,9 +20,9 @@ wp-cli.yml
 phpcs.xml.dist
 
 # Ignore everything in source...
-/source/wp-content/plugins
-/source/wp-content/mu-plugins
-/source/wp-content/themes/pub
+/source/wp-content/plugins/*
+/source/wp-content/mu-plugins/*
+/source/wp-content/themes/pub/*
 
 # Explicitly track the actual source of this project.
 !/source/wp-content/plugins/planet-wordpress-syndicator/
