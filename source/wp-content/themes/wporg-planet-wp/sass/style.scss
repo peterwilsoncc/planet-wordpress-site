@@ -7,6 +7,7 @@ Description: A theme for planet.wordpress.org. It is based on version 1.1.2 of t
 Version: 1.0.0
 License: GNU General Public License v2 or later
 Text Domain: wporg
+Template: wporg-parent-2021
 
 planet.wordpress.org Theme is distributed under the terms of the GNU GPL.
 
@@ -20,10 +21,3 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 */
-
-@import "base";
-@import "blocks";
-@import "components";
-@import "page";
-@import "post";
-@import "print";

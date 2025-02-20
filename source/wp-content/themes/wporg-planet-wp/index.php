@@ -1,6 +1,6 @@
 <?php
 /**
- * Planet WordPress Syndicator
+ * Planet WordPress Theme
  *
  * @package           PlanetWordPressTheme
  * @author            WordPress.org
