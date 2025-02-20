@@ -13,11 +13,8 @@
 		}
 
 		.wp-block-post-terms {
+			font-size: var(--wp--custom--h-3--typography--font-size);
 			text-transform: uppercase;
-		}
-
-		.wp-block-post-terms::after {
-			content: "\0020\00B7";
 		}
 	}
 
