@@ -122,7 +122,7 @@ function override_category_query_args( $query ) {
 function clarify_body_classes( $classes ) {
 	if ( is_home() ) {
 		// Strip out "page" class, to prevent single-page styles from applying.
-		$classes = array_diff( $classes, [ 'page' ] );
+		$classes   = array_diff( $classes, array( 'page' ) );
 		$classes[] = 'news-posts-index';
 	}
 
@@ -153,7 +153,7 @@ function specify_post_classes( $classes, $extra_classes, $post_id ) {
 
 	// Seems like the wp:query loop block doesn't count as "in the loop" so we'll do this the hard way:
 	$current_post = null;
-	$count_posts = count( $wp_query->posts );
+	$count_posts  = count( $wp_query->posts );
 	for ( $i = 0; $i < $count_posts; $i++ ) {
 		if ( $wp_query->posts[ $i ]->ID === $post_id ) {
 			$current_post = $i;
@@ -163,7 +163,7 @@ function specify_post_classes( $classes, $extra_classes, $post_id ) {
 	// Add last-in-year to help put design elements in between year groups in the Month In WordPress category
 	if ( $wp_query->is_category( 'month-in-wordpress' ) && $wp_query->post_count > 1 && ! is_null( $current_post ) ) {
 		// The "0th" of the month returns the last day of the previous month.
-		$date = date_create_from_format( 'Y-m-d H:i:s', get_the_date( 'Y-m-00 00:00:00' ) );
+		$date      = date_create_from_format( 'Y-m-d H:i:s', get_the_date( 'Y-m-00 00:00:00' ) );
 		$classes[] = 'post-year-' . $date->format( 'Y' );
 
 		if ( $current_post < $count_posts - 1 ) {
@@ -179,8 +179,8 @@ function specify_post_classes( $classes, $extra_classes, $post_id ) {
 	// Add helper classes for the Events category.
 	if ( $wp_query->is_category( 'events' ) && $wp_query->post_count > 0 && ! is_null( $current_post ) ) {
 		$first_year_of_page = date_create_from_format( 'Y-m-d H:i:s', get_the_date( 'Y-m-d 00:00:00', $wp_query->posts[0] ) );
-		$this_year = date_create_from_format( 'Y-m-d H:i:s', get_the_date( 'Y-m-d 00:00:00' ) );
-		$classes[] = 'post-year-' . $this_year->format( 'Y' );
+		$this_year          = date_create_from_format( 'Y-m-d H:i:s', get_the_date( 'Y-m-d 00:00:00' ) );
+		$classes[]          = 'post-year-' . $this_year->format( 'Y' );
 
 		if ( $first_year_of_page->format( 'Y' ) === $this_year->format( 'Y' ) ) {
 			$classes[] = 'first-year-of-page';
@@ -230,13 +230,13 @@ function custom_query_block_attributes( $parsed_block ) {
 		if ( isset( $parsed_block['attrs']['query']['category'] ) ) {
 			$category = get_category_by_slug( $parsed_block['attrs']['query']['category'] );
 			if ( $category ) {
-				$parsed_block['attrs']['query']['categoryIds'] = [ $category->term_id ];
+				$parsed_block['attrs']['query']['categoryIds'] = array( $category->term_id );
 			}
 		}
 		if ( isset( $parsed_block['attrs']['query']['tag'] ) ) {
 			$tag = get_term_by( 'slug', $parsed_block['attrs']['query']['tag'], 'post_tag' );
 			if ( $tag ) {
-				$parsed_block['attrs']['query']['tagIds'] = [ $tag->term_id ];
+				$parsed_block['attrs']['query']['tagIds'] = array( $tag->term_id );
 			}
 		}
 	}
@@ -252,7 +252,7 @@ function custom_query_block_attributes( $parsed_block ) {
  */
 function jetpack_likes_workaround() {
 	$jetpack_likes = class_exists( '\Jetpack_Likes' ) ? \Jetpack_Likes::init() : false;
-	if ( is_callable( [ $jetpack_likes, 'load_styles_register_scripts' ] ) ) {
+	if ( is_callable( array( $jetpack_likes, 'load_styles_register_scripts' ) ) ) {
 		$jetpack_likes->load_styles_register_scripts();
 	}
 }
@@ -264,7 +264,7 @@ function jetpack_likes_workaround() {
  * `podcast` post type to `$wp_query->query_vars['post_type']`. That causes the template loader to choose
  * `archive-podcast.html`, but we really want a standard content template instead.
  */
-function override_tag_template( array $templates ) : array {
+function override_tag_template( array $templates ): array {
 	if ( is_main_query() ) {
 		// This must use the Classic `.php` hierarchy extension. It will later be automatically converted to `.html`
 		// by Core.
@@ -301,13 +301,13 @@ function add_links_to_categories_list( $html, $args ) {
 
 	$raw_links = explode( "\n\t", $html );
 	$labels    = array_map(
-		function( $link ) {
+		function ( $link ) {
 			preg_match( '|href="[^"]+">([^<]+)</a>|', $link, $matches );
 			return $matches[1] ?? '';
 		},
 		$raw_links
 	);
-	$links = array_combine( $labels, $raw_links );
+	$links     = array_combine( $labels, $raw_links );
 
 	ksort( $links );
 
@@ -391,7 +391,7 @@ function print_events_category_archive_script() {
  */
 function add_block_styles() {
 	$props_styles = array(
-		'short' => array(
+		'short'  => array(
 			'name'  => 'wporg-props-short',
 			'label' => __( 'Props (Short)', 'wporg' ),
 		),
@@ -399,7 +399,7 @@ function add_block_styles() {
 			'name'  => 'wporg-props-medium',
 			'label' => __( 'Props (Medium)', 'wporg' ),
 		),
-		'long' => array(
+		'long'   => array(
 			'name'  => 'wporg-props-long',
 			'label' => __( 'Props (Long)', 'wporg' ),
 		),
@@ -463,16 +463,16 @@ function add_site_navigation_menus( $menus ) {
 	$term_list = get_terms(
 		array(
 			'taxonomy' => 'category',
-			'parent' => 0,
-			'orderby' => 'name',
+			'parent'   => 0,
+			'orderby'  => 'name',
 		)
 	);
 
 	$categories = array_map(
-		function( $item ) {
+		function ( $item ) {
 			return array(
-				'label' => $item->name,
-				'url' => get_term_link( $item ),
+				'label'     => $item->name,
+				'url'       => get_term_link( $item ),
 				'className' => is_category( $item->term_id ) ? 'current-menu-item' : '',
 			);
 		},
@@ -482,7 +482,7 @@ function add_site_navigation_menus( $menus ) {
 	// All Posts
 	usort(
 		$categories,
-		function( $a, $b ) {
+		function ( $a, $b ) {
 			return strcmp( $a['label'], $b['label'] );
 		}
 	);
@@ -490,7 +490,7 @@ function add_site_navigation_menus( $menus ) {
 	return array(
 		'categories' => array(
 			array(
-				'label' => __( 'Sites', 'wporg' ),
+				'label'   => __( 'Sites', 'wporg' ),
 				'submenu' => $categories,
 			),
 		),
