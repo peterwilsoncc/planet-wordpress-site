@@ -19,6 +19,8 @@ function bootstrap() {
 /**
  * Array of syndicated feeds
  *
+ * @todo Add all the feeds from existing Planet WordPress.
+ *
  * @return array[] Array if syndicated feeds {
  *     Each feed should be in the following shape:
  *
@@ -32,6 +34,11 @@ function bootstrap() {
 function get_syndicated_feeds() {
 	$feeds = array(
 		array(
+			'title'     => 'bbPress',
+			'feed_url'  => 'https://bbpress.org/blog/feed/',
+			'site_link' => 'https://bbpress.org/',
+		),
+		array(
 			'title'     => 'WordPress News',
 			'feed_url'  => 'https://wordpress.org/news/feed/',
 			'site_link' => 'https://wordpress.org/news/',
@@ -42,9 +49,14 @@ function get_syndicated_feeds() {
 			'site_link' => 'https://developer.wordpress.org/news/',
 		),
 		array(
-			'title'     => 'Peter Wilson',
-			'feed_url'  => 'https://peterwilson.cc/feed/planet-wordpress',
-			'site_link' => 'https://peterwilson.cc/tag/wordpress/',
+			'title'     => 'Gutenberg Times',
+			'feed_url'  => 'https://gutenbergtimes.com/feed/',
+			'site_link' => 'https://gutenbergtimes.com/',
+		),
+		array(
+			'title'     => 'WordCamp Central',
+			'feed_url'  => 'https://central.wordcamp.org/feed/',
+			'site_link' => 'https://central.wordcamp.org/',
 		),
 		array(
 			'title'     => 'WordPress Tavern',
@@ -53,7 +65,7 @@ function get_syndicated_feeds() {
 		),
 		array(
 			'title'     => 'Matt',
-			'feed_url'  => 'https://ma.tt/feed/',
+			'feed_url'  => 'https://ma.tt/feed/?cat=-49',
 			'site_link' => 'https://ma.tt/',
 		),
 	);
